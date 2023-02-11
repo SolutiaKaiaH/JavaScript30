@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
+
+      const cities = [];
+
+      // fetch is an API
+      // fetch will return a promise
+      // const prom = fetch(endpoint);
+      // console.log(prom); //resolved will display
+
+      // this will give us an array of all the cities and their data
+      //type cities in terminal to view the cities
+      fetch(endpoint)
+        .then((blob) => blob.json())
+        .then((data) => cities.push(...data));
+
+      //run findMatches('bos', cities) in terminal
+      function findMatches(wordToMatch, cities) {
+        return cities.filter((place) => {
+          // here we need to figure out if the city or state matches what was searched
+
+          //we can't just say place.city.match('bos') because it's not always bos
+          // we can't just pass .match(wordToMatch) because that will look for the exact word
+          // solution is a regex
+
+          // g means global: look through the entire string
+          // i means insensitive: makes lowercase and uppercase
+          const regex = new RegExp(wordToMatch, "gi");
+          return place.city.match(regex) || place.state.match(regex);
+        });
+      }
+
+      // adds commas to our population numbers
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function displayMatches() {
+        const matchArray = findMatches(this.value, cities);
+        console.log(matchArray);
+
+        //set up what to display on the page
+        const html = matchArray
+          .map((place) => {
+            //replace the found regex with a highlighted regex
+            const regex = new RegExp(this.value, "gi");
+            const cityName = place.city.replace(
+              regex,
+              `<span class="hl">${this.value}</span>`
+            );
+            const stateName = place.state.replace(
+              regex,
+              `<span class="hl">${this.value}</span>`
+            );
+            // return the format you want
+            return `
+          <li>
+            <span class="name">${cityName}, ${stateName}</span>
+            <span class="population">${numberWithCommas(
+              place.population
+            )}</span>
+          </li>
+            `;
+          })
+          .join(""); //turn an array of multiple things into one big string
+        // put it into the html
+        suggestions.innerHTML = html;
+      }
+
+      const searchInput = document.querySelector(".search");
+      const suggestions = document.querySelector(".suggestions");
+
+      //whenever someone types in the box and clicks out of screen or clicks another key
+      //it will be the new this.value
+      searchInput.addEventListener("change", displayMatches);
+      searchInput.addEventListener("keyup", displayMatches);
+    </script>
+  </body>
+</html>

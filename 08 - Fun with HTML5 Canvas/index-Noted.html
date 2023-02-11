@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Canvas</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <canvas id="draw" width="800" height="800"></canvas>
+    <script>
+      //hsl a website where you can grab the different colors
+      // hue, saturation, and lightness
+
+      // ctx is an open source canvas API for drawing graphics with JS and HTML
+      const canvas = document.querySelector("#draw");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.strokeStyle = "#BADA55";
+      ctx.lineJoin = "round"; //when a line meets another line
+      ctx.lineCap = "round"; //when a line ends
+      ctx.lineWidth = 50;
+
+      let isDrawing = false;
+      //lastX and lastY are built in variables
+      let lastX = 0;
+      let lastY = 0;
+      let hue = 0;
+      let direction = true;
+
+      function draw(e) {
+        if (!isDrawing) return; //stop the function from running when they are not moused down
+        console.log(e);
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; //rainbow hue
+
+        ctx.beginPath();
+        //start from
+        ctx.moveTo(lastX, lastY);
+        //go to
+        ctx.lineTo(e.offsetX, e.offsetY); //coming from the event of moving. look in console
+        ctx.stroke();
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+        hue++; //rainbow hue changing color
+        //reset hue to beginning, otherwise it just keeps adding on to 360
+        if (hue >= 360) {
+          hue = 0;
+        }
+        //if greater than 100 flip direction, if less than 1, flip direction
+        // depending on direction we either decrement or increment
+        if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+          direction = !direction;
+        }
+        //
+        if (direction) {
+          ctx.lineWidth++; //increment from 0 to 100
+        } else {
+          ctx.lineWidth--; //once we hit 100, decrement to 0
+        }
+      }
+
+      //in order to make sure the x and y cords are up to date, we need to update them after mousedown
+      // so we don't just start at 0, and we can make new lines not just continuous ones
+      canvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+      });
+
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", () => (isDrawing = false));
+      canvas.addEventListener("mouseout", () => (isDrawing = false));
+    </script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>
