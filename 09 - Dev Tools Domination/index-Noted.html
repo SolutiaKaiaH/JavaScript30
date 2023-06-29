@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Console Tricks!</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <p onClick="makeGreen()">×BREAK×DOWN×</p>
+    <!-- break on -> attribute modification -->
+    <!-- this will show you exactly where the JS changes an attribute and when -->
+
+    <script>
+      const dogs = [
+        { name: "Snickers", age: 2 },
+        { name: "hugo", age: 8 },
+      ];
+
+      function makeGreen() {
+        const p = document.querySelector("p");
+        p.style.color = "#BADA55";
+        p.style.fontSize = "50px";
+      }
+
+      // Regular
+      console.log("hello");
+
+      // Interpolated
+      console.log("Hello I am a %s string!", "hello"); //this will put hello in at %s
+      console.log(`Hello I am ${"variable"}`);
+
+      // Styled
+      console.log("%cI am some great text", "font-size:50px; background:red");
+      //inline style your text with %c
+
+      // warning!
+      console.warn("OH NOOO");
+
+      // Error :|
+      console.error("Shit!");
+      //basically logging an error at this line
+
+      // Info
+      console.info("alfek");
+      //will give you the little info button
+
+      // Testing
+      //checking to see if a p tag contains the word ouch, and will only print
+      // 'that is wrong' if it does not
+      const p = document.querySelector("p");
+      console.assert(p.classList.contains("ouch"), "That is wrong!");
+
+      // clearing //clear console
+      console.clear();
+
+      // Viewing DOM Elements
+      console.log(p);
+      console.dir(p); //you can see all the different properties and methods that are on this element
+
+      // Grouping together
+      //instead of it looking messy and ungrouped, if you put a group name up it will list
+      // that first in the console. Looks better
+      dogs.forEach((dog) => {
+        console.group(`${dog.name}`);
+        console.log(`This is ${dog.name}`);
+        console.log(`This is ${dog.name} is ${dog.age} years old`);
+        console.log(`${dog.name} is ${dog.age * 7} dog years old`);
+        console.groupEnd(`${dog.name}`);
+      });
+
+      // counting
+      //how many time you've said Wes
+      console.count("Wes");
+
+      // timing
+      //how long something takes
+      console.time("fetching data");
+      fetch("https://api.github.com/users/wesbos")
+        .then((data) => data.json())
+        .then((data) => {
+          console.timeEnd("fetching data");
+          console.log(data);
+        });
+
+      console.table(dogs);
+    </script>
+  </body>
+</html>
